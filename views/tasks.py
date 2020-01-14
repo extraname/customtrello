@@ -29,21 +29,22 @@ class SingleTask(Resource):
 
 class TaskUsers(Resource):
     def get(self, task_id):
-        return serialize_multiple(Task.query.get(task_id).users)
+        return serialize_multiple(Task.query.get(task_id).users_id)
 
     def post(self, task_id):
         user_id = request.get_json()['user_id']
         task = Task.query.get(task_id)
-        task.users.append(User.query.get(user_id))
+        task.users_id.append(User.query.get(user_id))
         db.session.commit()
 
         return {}, 201
 
 
-class TaskMasterUser(Resource):     # VOPROS
-    def get(self, tasks_id):
-        user_id = Task.query.get(tasks_id).master_user_id
-        return serialize_multiple(User.query.get(user_id))
+class TaskMasterUser(Resource):
+    def get(self, task_id):
+        user_id = Task.query.get(task_id).master_user_id
+        print(user_id)
+        return User.query.get(user_id).serialize()
 
     def patch(self, task_id):
         data = request.get_json()
@@ -54,13 +55,13 @@ class TaskMasterUser(Resource):     # VOPROS
 
 class TaskComment(Resource):    # Vopros
     def get(self, task_id):
-        return serialize_multiple(Task.query.get(task_id).task_comment)
+        return Task.query.get(task_id).task_comment
 
     def post(self, task_id):
         data = request.get_json()['task_comment']
         user = request.get_json()['users_id']
         task = Task.query.get(task_id)
-        if user in task.users:
+        if user in task.users_id:
             db.session.query(Task).filter_by(id=task_id).update(data)
             db.session.commit()
             return {}, 201
@@ -68,9 +69,10 @@ class TaskComment(Resource):    # Vopros
             return f"You cant comment this Task"
 
 
-class TaskStatus(Resource):     # VOPROS
+class TaskStatus(Resource):
     def get(self, task_id):
-        return serialize_multiple(Task.query.get(task_id).status)
+        print(task_id)
+        return Task.query.get(task_id).status
 
     def post(self, task_id):
         data = request.get_json()['status']
@@ -89,4 +91,6 @@ class TaskStatus(Resource):     # VOPROS
 
 class TaskWithStatus(Resource):
     def get(self, status):
-        return Task.query.filter_by(status=status).get.all()
+        print(status)
+        status_ = status.replace("-", " ")
+        return serialize_multiple(Task.query.filter_by(status=status_).all())
