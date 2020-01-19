@@ -41,7 +41,7 @@ class DashBoardTasks(Resource):
             Task.query.filter(Task.dashboard_id == dashboard_id).all()
         )
 
-    def post(self, dashboard_id):
+    def post(self, dashboard_id):   # Задать вопросы
         task_id = request.get_json()['task_id']
         dashboard = DashBoard.query.get(dashboard_id)
         dashboard.tasks.append(Task.query.get(task_id))
