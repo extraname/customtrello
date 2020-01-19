@@ -42,9 +42,7 @@ class DashBoard(db.Model):
     def serialize(self) -> dict:
         return {
             "id": self.id,
-            "name": self.dashboard_name,
-            "users": self.users,
-            "tasks": self.tasks
+            "name": self.dashboard_name
         }
 
 
