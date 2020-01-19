@@ -91,6 +91,5 @@ class TaskStatus(Resource):
 
 class TaskWithStatus(Resource):
     def get(self, status):
-        print(status)
         status_ = status.replace("-", " ")
         return serialize_multiple(Task.query.filter_by(status=status_).all())
