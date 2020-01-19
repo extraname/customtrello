@@ -83,7 +83,7 @@ class TaskStatus(Resource):
             return f"Inappropriate operation", 406
 
     def patch(self, task_id):
-        data = request.get_json()['status']
+        data = request.get_json()
         db.session.query(Task).filter_by(id=task_id).update(data)
         db.session.commit()
         return 204
